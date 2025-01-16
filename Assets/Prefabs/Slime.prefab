@@ -129,6 +129,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   patrolVelocity: 2
+  damage: 0
 --- !u!50 &8823357818539697026
 Rigidbody2D:
   serializedVersion: 5

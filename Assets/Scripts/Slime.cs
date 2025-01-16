@@ -5,6 +5,7 @@ public class Slime : MonoBehaviour
 {
     [SerializeField] private Transform[] points;
     [SerializeField] private float patrolVelocity;
+    [SerializeField] public float damage;
     private Vector3 currentDestiny;
     private int currentIndex;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -13,12 +14,6 @@ public class Slime : MonoBehaviour
         currentIndex = 0;
         currentDestiny = points[currentIndex].position;
         StartCoroutine(patrol());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     IEnumerator patrol(){
@@ -47,4 +42,14 @@ public class Slime : MonoBehaviour
             transform.localScale = new Vector3(-1,1,1);
         }
     }
+    private void OnTriggerEnter2D(Collider2D other) {
+         if(other.gameObject.CompareTag("PlayerDetection")){
+            Debug.Log("Te cachamos mi buen");
+         }
+         else if(other.gameObject.CompareTag("PlayerHitBox")){
+            Debug.Log("EL SLIME TE PEGA");
+          /* LivesSystem thePlayer = other.gameObject.GetComponent<LivesSystem>();
+           thePlayer.receiveDamage(10);*/
+         }
+    }   
 }

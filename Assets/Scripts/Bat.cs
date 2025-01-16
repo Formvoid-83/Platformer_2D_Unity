@@ -1,10 +1,12 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bat : MonoBehaviour
 {
     [SerializeField] private Transform[] points;
     [SerializeField] private float patrolVelocity;
+    [SerializeField] private float damage;
     private Vector3 currentDestiny;
     private int currentIndex;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,4 +51,5 @@ public class Bat : MonoBehaviour
             Debug.Log("Te tocamos prro");
          }
     }
+
 }
