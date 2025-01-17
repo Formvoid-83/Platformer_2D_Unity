@@ -189,12 +189,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ab35a06be809e4eb98540fd1572bb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
   speedVelocity: 5
   jumpVelocity: 25
+  groundDistance: 0
+  whatIsJumpable:
+    serializedVersion: 2
+    m_Bits: 0
+  feet: {fileID: 0}
   attackDamage: 0
   attackPoint: {fileID: 0}
   attackRadious: 0
+  hurtForce: 0
+  knockbackDuration: 0.2
   whatCanReceiveDamage:
     serializedVersion: 2
     m_Bits: 0

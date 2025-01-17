@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
     private float inputH;
-    public int maxHealth = 100;
+    private int maxHealth = 100;
     private SpriteRenderer spriteRenderer;
     private float currentHealth;
     private Image healthBarFill;
@@ -21,7 +22,11 @@ public class Player : MonoBehaviour
     [Header("Combat System")]
     [SerializeField] private float attackDamage;
     [SerializeField] private Transform attackPoint;
+    [SerializeField] private Transform crouchAttackPoint;
     [SerializeField] private float attackRadious;
+    [SerializeField] private float hurtForce;
+    [SerializeField] private float knockbackDuration; 
+    private bool isKnockback = false;
     [SerializeField] private LayerMask whatCanReceiveDamage;
     private Animator animator;
 
@@ -52,21 +57,47 @@ public class Player : MonoBehaviour
     void Update()
     {
         Movement();
+        Crouch();
         Jump();
+        JumpAttack();
+        UpdateJumpAnimation();
         throwAttack();
     }
+
+    private void Crouch()
+{
+    bool isCrouchingKeyHeld = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+
+    if (isCrouchingKeyHeld && amIGrounded())
+    {
+        // Enable crouch animation
+        animator.SetBool("isCrouching", true);
+
+        // Crouch attack only when crouching
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            animator.SetTrigger("crouchAttack");
+        }
+    }
+    else
+    {
+        // Disable crouch animation when not holding the crouch key
+        animator.SetBool("isCrouching", false);
+    }
+}
+
+
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("enemySlime"))
+        if (collision.gameObject.TryGetComponent(out EnemyController enemy))
         {
-            var slime = collision.GetComponent<Slime>();
-            if (slime != null) TakeDamage((int)slime.damage);
+            if (enemy!=null) TakeDamage((int)enemy.Damage);
         }
     }
 
     private void throwAttack()
     {
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V) && amIGrounded())
         {
             animator.SetTrigger("attack");
         }
@@ -74,6 +105,14 @@ public class Player : MonoBehaviour
     private void Attack(){
         LivesSystem liveSystem;
         Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRadious, whatCanReceiveDamage);
+        foreach(Collider2D touchCol in touchedColliders){
+            liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
+            liveSystem.receiveDamage(attackDamage);
+        }
+    }
+    private void CrouchAttack(){
+        LivesSystem liveSystem;
+        Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(crouchAttackPoint.position, attackRadious, whatCanReceiveDamage);
         foreach(Collider2D touchCol in touchedColliders){
             liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
             liveSystem.receiveDamage(attackDamage);
@@ -88,10 +127,20 @@ public class Player : MonoBehaviour
             animator.SetTrigger("jump");
         }
     }
+    private void JumpAttack(){
+        if(Input.GetKeyDown(KeyCode.V) && !amIGrounded()){
+                animator.SetTrigger("jumpAttack");
+            }
+    }
+    private void UpdateJumpAnimation()
+    {
+        // Set isJumping to true when not grounded
+        animator.SetBool("isJumping", !amIGrounded());
+    }
     private bool amIGrounded(){
         return Physics2D.Raycast(feet.position, Vector3.down, groundDistance, whatIsJumpable);
     }
-
+        
     private void Movement()
     {
         inputH = Input.GetAxisRaw("Horizontal");
@@ -117,6 +166,11 @@ public class Player : MonoBehaviour
         {
             currentHealth -= damage;
             StartCoroutine(BlinkEffect());
+            // Apply knockback
+            Vector2 knockbackDirection = inputH > 0 ? Vector2.left : Vector2.right;
+            StartCoroutine(ApplyKnockback(knockbackDirection));
+            animator.SetBool("hurt", true);
+            StartCoroutine(EndHurtAnimation()); 
         }
 
         // Clamp health and update UI
@@ -133,6 +187,22 @@ public class Player : MonoBehaviour
         spriteRenderer.color = originalColor;
         isBlinking = false;
     }
+    private IEnumerator EndHurtAnimation()
+    {
+    yield return new WaitForSeconds(0.3f);  // Adjust the time to match the animation length
+    animator.SetBool("hurt", false);
+    }
+    private IEnumerator ApplyKnockback(Vector2 direction)
+    {
+    isKnockback = true;
+    // Zero out the current velocity to ensure clean knockback
+    rb.linearVelocity = Vector2.zero;
+    // Apply force
+    rb.AddForce(direction * hurtForce, ForceMode2D.Impulse);
+    // Disable movement temporarily
+    yield return new WaitForSeconds(knockbackDuration);
+    isKnockback = false;
+    }
 
     void Die()
     {
@@ -142,5 +212,6 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos() {
         Gizmos.DrawSphere(attackPoint.position, attackRadious);
+        Gizmos.DrawSphere(crouchAttackPoint.position, attackRadious);
     }
 }

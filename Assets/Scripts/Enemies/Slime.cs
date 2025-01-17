@@ -5,7 +5,7 @@ public class Slime : MonoBehaviour
 {
     [SerializeField] private Transform[] points;
     [SerializeField] private float patrolVelocity;
-    [SerializeField] public float damage;
+    [SerializeField] private float damage=20;
     private Vector3 currentDestiny;
     private int currentIndex;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,4 +52,7 @@ public class Slime : MonoBehaviour
            thePlayer.receiveDamage(10);*/
          }
     }   
+    public float getDamage(){
+        return damage;
+    }
 }

@@ -1,9 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-public class Wizard : MonoBehaviour
+public abstract class Wizard : Enemy
 {
-    [SerializeField] private float damage;
     [SerializeField] private GameObject fireBall; //Prefab
     [SerializeField] private Transform spawn; //Prefab
     [SerializeField] private float attackTime; //Prefab

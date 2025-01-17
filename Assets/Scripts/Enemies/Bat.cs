@@ -2,11 +2,11 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Bat : MonoBehaviour
+public abstract class Bat : Enemy
 {
     [SerializeField] private Transform[] points;
     [SerializeField] private float patrolVelocity;
-    [SerializeField] private float damage;
+    public static float counter;
     private Vector3 currentDestiny;
     private int currentIndex;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
