@@ -342,6 +342,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 20
+  isStatic: 0
 --- !u!114 &3048523503856399535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,7 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chaseVelocity: 2.3
-  stopDistance: 0.5
+  stopDistance: 5
 --- !u!114 &663427823273524710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,7 +400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c10090e10bfa974f916e19328b53096, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDistance: 0.3
+  attackDistance: 3
   timeBetweenAttacks: 1
 --- !u!61 &8969825282112293553
 BoxCollider2D:

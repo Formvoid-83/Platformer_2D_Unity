@@ -17,17 +17,21 @@ public class AttackState : State<EnemyController>
     public override void OnUpdateState()
     {
         timer+= Time.deltaTime;
-        if(timer > timeBetweenAttacks){
-            //Trigger animation
+        if(timer >= timeBetweenAttacks){
+            //Animate Attack
+            controller.Movement.AnimateAttack();
             timer=0;
         }
-        if(Vector3.Distance(transform.position, target.position) > attackDistance){
+        if (Vector3.Distance(transform.position, target.position) > attackDistance + 0.5f)
+        {
             controller.changeState(controller.ChaseState);
         }
     }
     public override void OnExitState()
     {
         //throw new System.NotImplementedException();
+        controller.Movement.StopAnimateAttack();
+        timer=0;
     }
     private void OnTriggerEnter2D(Collider2D other) {
        if(other.gameObject.TryGetComponent(out Player player)){

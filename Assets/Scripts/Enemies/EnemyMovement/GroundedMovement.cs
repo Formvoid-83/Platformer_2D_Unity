@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class GroundedMovement : EnemyMovement
 {
@@ -6,11 +7,14 @@ public class GroundedMovement : EnemyMovement
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float fallSpeed = 5f;
 
+    private Animator anim;
+
     private Rigidbody rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
 
     public override void MoveTowards(Vector3 targetPosition, float speed)
@@ -31,6 +35,18 @@ public class GroundedMovement : EnemyMovement
             // No ground detected, simulate falling
             transform.position += Vector3.down * fallSpeed * Time.deltaTime;
         }
+    }
+    public override void AnimateAttack()
+    {
+        anim.SetBool("atacando", true);
+    }
+    public override void StopAnimateAttack()
+    {
+        anim.SetBool("atacando", false);
+    }
+    public override void DeathAnimation()
+    {
+        //anim.SetBool("atacando", false);
     }
 
     private void OnDrawGizmosSelected()

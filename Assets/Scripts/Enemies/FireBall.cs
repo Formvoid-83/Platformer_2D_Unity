@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -8,12 +9,18 @@ public class FireBall : MonoBehaviour
     private float timer;
     [SerializeField] private float damage;
     [SerializeField] private float shotForce;
+    [SerializeField] private float durationTime;
+    private Animator anim;
+    private CircleCollider2D collider;
     private Vector2 direction;
+    private bool isExploding = false; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.AddForce(direction * shotForce, ForceMode2D.Impulse);
+        anim = GetComponent<Animator>();
+        collider = GetComponent<CircleCollider2D>();
         timer=0;
     }
 
@@ -21,9 +28,17 @@ public class FireBall : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if(timer>3){
-            Destroy(this.gameObject);
+        if (timer > durationTime - 0.5f && !isExploding)
+        {
+            StartCoroutine(DestroyBall());
         }
+    }
+    IEnumerator DestroyBall()
+    {
+        isExploding = true;
+        anim.SetTrigger("explotar");
+        yield return new WaitForSeconds(0.3f);
+        Destroy(gameObject);
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -45,5 +60,8 @@ public class FireBall : MonoBehaviour
         Debug.Log("HETADFADG");
         direction = newDirection.normalized; // Normalize to ensure consistent speed
         
+    }
+    public void Explotion(){
+        collider.radius = 0.9f;
     }
 }

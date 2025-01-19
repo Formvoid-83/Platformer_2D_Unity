@@ -244,7 +244,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.31292534
+  m_Radius: 0.3129253
 --- !u!114 &6767113749902055032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,3 +259,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   shotForce: 5
+  durationTime: 2

@@ -8,6 +8,7 @@ public class LivesSystem : MonoBehaviour
     private bool isBlinking = false;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
+    private bool isDead = false;
 
     public float Lives { get => lives; set => lives = value; }
 
@@ -17,12 +18,37 @@ public class LivesSystem : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void receiveDamage(float damageDealt){
+    public void receiveDamage(float damageDealt)
+    {
+        if (isDead) return; // Prevent further damage after death
+
         lives -= damageDealt;
-        if(lives<=0){
-            Destroy(this.gameObject);
+        if (lives <= 0)
+        {
+            StartDeathSequence();
         }
-        StartCoroutine(BlinkEffect());
+        else
+        {
+            StartCoroutine(BlinkEffect());
+        }
+    }
+    private void StartDeathSequence()
+    {
+        isDead = true; // Mark as dead to prevent repeated triggers
+
+        // Check if the enemy has FlyingMovement for death animation
+        FlyingMovement flyingMovement = GetComponent<FlyingMovement>();
+        if (flyingMovement != null)
+        {
+            flyingMovement.DeathAnimation();
+            //Debug.Log("BAT DEATH ANIMATION");
+            // Optionally, delay destruction until the animation ends
+            Destroy(gameObject, 1f); // Adjust delay based on animation length
+        }
+        else
+        {
+            Destroy(gameObject); // No animation, destroy immediately
+        }
     }
     IEnumerator BlinkEffect()
     {

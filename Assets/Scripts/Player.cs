@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private Image healthBarFill;
     private Color originalColor;
     private bool isBlinking = false;
+    private PlayerSounds playSound;
     [Header("The Manager")]
     [SerializeField] private GameObject gameManager;
     private GameManager theManager;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        playSound = GetComponent<PlayerSounds>();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -175,6 +177,7 @@ public class Player : MonoBehaviour
             Vector2 knockbackDirection = inputH > 0 ? Vector2.left : Vector2.right;
             StartCoroutine(ApplyKnockback(knockbackDirection));
             animator.SetBool("hurt", true);
+            playSound.HurtSound();//Play a hurting sound effect
             StartCoroutine(EndHurtAnimation()); 
         }
 

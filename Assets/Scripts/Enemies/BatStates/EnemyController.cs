@@ -15,11 +15,12 @@ public class EnemyController : MonoBehaviour
     public AttackState AttackState { get => attackState; }
     public static float Counter { get => counter; set => counter = value; }
     public float Damage { get => damage;}
+    public EnemyMovement Movement { get => movement; set => movement = value; }
 
     void Start()
     {
         if(!isStatic){
-            patroState = GetComponent<PatrolState>();
+        patroState = GetComponent<PatrolState>();
         chaseState = GetComponent<ChaseState>();
         attackState = GetComponent<AttackState>();
 

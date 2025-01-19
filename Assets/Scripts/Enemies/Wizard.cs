@@ -7,17 +7,18 @@ public class Wizard : MonoBehaviour
     [SerializeField] private Transform spawn; //Prefab
     [SerializeField] private float attackTime; //Prefab
     [SerializeField] private Transform wizardSprite; // Drag the wizard's sprite or parent with the SpriteRenderer
-    private bool isFacingRight = true;
     private Animator anim; //Prefab
+    private bool isFacingRight = true;
+    private bool isAttacking = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         anim = GetComponent<Animator>();
-        StartCoroutine(attackRoutine());
+        
     }
     IEnumerator attackRoutine(){
-        while(true){
+        while(isAttacking){
             anim.SetTrigger("atacar");
             yield return new WaitForSeconds(attackTime);
         }
@@ -26,6 +27,9 @@ public class Wizard : MonoBehaviour
     {
         if (other.gameObject.CompareTag("PlayerHitBox"))
         {
+            isAttacking=true;
+            StartCoroutine(attackRoutine());
+
             Transform player = other.transform;
             // Check the player's position relative to the wizard and flip if needed
             if ((player.position.x < transform.position.x && isFacingRight) || 
@@ -33,6 +37,12 @@ public class Wizard : MonoBehaviour
             {
                 Flip();
             }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other){
+        if (other.gameObject.CompareTag("PlayerHitBox"))
+        {
+            isAttacking=false;
         }
     }
     private void Flip()

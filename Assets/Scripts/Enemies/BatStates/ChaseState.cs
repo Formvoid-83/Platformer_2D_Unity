@@ -5,6 +5,10 @@ public class ChaseState : State<EnemyController>
     private Transform target;
     [SerializeField] private float chaseVelocity;
     [SerializeField] private float stopDistance;
+   /* public ChaseState(Transform playerTransform)
+    {
+        target = playerTransform;
+    }*/
     public override void OnEnterState(EnemyController controller)
     {
         base.OnEnterState(controller);
