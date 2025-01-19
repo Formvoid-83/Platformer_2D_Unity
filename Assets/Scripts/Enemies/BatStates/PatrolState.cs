@@ -19,12 +19,15 @@ public class PatrolState : State<EnemyController>
     }
 
     public override void OnUpdateState()
+{
+    controller.MoveTowards(currentDestination, patrolVelocity);
+
+    if (transform.position == currentDestination)
     {
-        transform.position = Vector3.MoveTowards(transform.position, currentDestination, patrolVelocity* Time.deltaTime);
-        if(transform.position == currentDestination){
-            CalculateNewDestination();
-        }
+        CalculateNewDestination();
     }
+}
+
 
     private void CalculateNewDestination()
     {

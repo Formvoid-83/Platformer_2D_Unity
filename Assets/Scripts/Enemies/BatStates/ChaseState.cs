@@ -11,15 +11,27 @@ public class ChaseState : State<EnemyController>
         target = FindFirstObjectByType<Player>().transform;
     }
     public override void OnUpdateState()
+{
+    if (target)
     {
-        if(target){
+        controller.MoveTowards(target.position, chaseVelocity);
 
-        transform.position = Vector3.MoveTowards(transform.position, target.position, chaseVelocity * Time.deltaTime);
-        if(Vector3.Distance(transform.position, target.position) <= stopDistance){
+        if (Vector3.Distance(transform.position, target.position) <= stopDistance)
+        {
             controller.changeState(controller.AttackState);
         }
+        //Flip the sprite in case the player is to the other side
+        if(target.position.x < transform.position.x){
+            transform.localScale = new Vector3(-1,1,1);
         }
+        else{
+            transform.localScale = new Vector3(1,1,1);
+        }
+        
+
     }
+}
+
     public override void OnExitState()
     {
         

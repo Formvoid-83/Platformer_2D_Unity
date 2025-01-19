@@ -3,10 +3,12 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private float damage;
+    [SerializeField] private bool isStatic;
     private PatrolState patroState;
     private ChaseState chaseState;
     private AttackState attackState;
     private State<EnemyController> currentState;
+    private EnemyMovement movement;
     private static float counter;
     public PatrolState PatroState { get => patroState;  }
     public ChaseState ChaseState { get => chaseState;  }
@@ -16,17 +18,22 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        patroState = GetComponent<PatrolState>();
+        if(!isStatic){
+            patroState = GetComponent<PatrolState>();
         chaseState = GetComponent<ChaseState>();
         attackState = GetComponent<AttackState>();
 
+        movement = GetComponent<EnemyMovement>();
+
         changeState(patroState);
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(currentState){
+        if(!isStatic && currentState){
             currentState.OnUpdateState();
         }
     }
@@ -36,5 +43,10 @@ public class EnemyController : MonoBehaviour
         }
         currentState = newState;
         currentState.OnEnterState(this);
+    }
+    public void MoveTowards(Vector3 targetPosition, float speed)
+    {
+        movement.MoveTowards(targetPosition, speed);
+        
     }
 }

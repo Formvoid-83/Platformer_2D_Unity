@@ -13,6 +13,9 @@ public class Player : MonoBehaviour
     private Image healthBarFill;
     private Color originalColor;
     private bool isBlinking = false;
+    [Header("The Manager")]
+    [SerializeField] private GameObject gameManager;
+    private GameManager theManager;
     [Header("Movement")]
     [SerializeField] private float speedVelocity;
     [SerializeField] private float jumpVelocity;
@@ -51,6 +54,8 @@ public class Player : MonoBehaviour
             Debug.LogError("Health bar UI element not found!");
         }
         originalColor = spriteRenderer.color;
+        theManager = gameManager.GetComponent<GameManager>();
+ 
     }
 
     // Update is called once per frame
@@ -160,7 +165,7 @@ public class Player : MonoBehaviour
             animator.SetBool("running", false);
         }
     }
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         if (!isBlinking)
         {
@@ -176,8 +181,8 @@ public class Player : MonoBehaviour
         // Clamp health and update UI
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         if (healthBarFill != null) healthBarFill.fillAmount = currentHealth / maxHealth;
-        Debug.Log(currentHealth);
         if (currentHealth <= 0) Die();
+        Debug.Log("The health of player is: " +currentHealth);
     }
     IEnumerator BlinkEffect()
     {
@@ -207,7 +212,7 @@ public class Player : MonoBehaviour
     void Die()
     {
         Debug.Log("Player is dead!");
-        //gameController?.GameOver();
+        theManager?.GameOver();
     }
 
     private void OnDrawGizmos() {
