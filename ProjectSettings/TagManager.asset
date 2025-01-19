@@ -11,6 +11,7 @@ TagManager:
   - healthBarFill
   - Enemy
   - enemySlime
+  - effectSource
   layers:
   - Default
   - TransparentFX

@@ -5,6 +5,9 @@ using UnityEngine;
 public class LivesSystem : MonoBehaviour
 {
     [SerializeField] private float lives;
+    [SerializeField] private AudioSource src;
+    [SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip hurtSound;
     private bool isBlinking = false;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
@@ -21,10 +24,11 @@ public class LivesSystem : MonoBehaviour
     public void receiveDamage(float damageDealt)
     {
         if (isDead) return; // Prevent further damage after death
-
+        HurtSound();
         lives -= damageDealt;
         if (lives <= 0)
         {
+            DeathSound();
             StartDeathSequence();
         }
         else
@@ -57,6 +61,18 @@ public class LivesSystem : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.color = originalColor;
         isBlinking = false;
+    }
+    public void DeathSound(){
+        if(src!=null && deathSound!=null){
+            src.clip = deathSound;
+            src.Play();
+        }
+    }
+    public void HurtSound(){
+        if(src!=null && hurtSound!=null){
+            src.clip = hurtSound;
+            src.Play();
+        }
     }
     
 }
