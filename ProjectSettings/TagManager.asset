@@ -12,6 +12,7 @@ TagManager:
   - Enemy
   - enemySlime
   - effectSource
+  - GameManager
   layers:
   - Default
   - TransparentFX

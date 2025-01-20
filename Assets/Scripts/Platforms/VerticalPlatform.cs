@@ -51,6 +51,23 @@ public class VerticalPlatform : MonoBehaviour
         }
         currentDestiny = targetPositions[currentIndex];
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if the player has collided with the platform
+        if (collision.gameObject.CompareTag("PlayerHitBox"))
+        {
+            collision.transform.SetParent(transform); // Parent the player to the platform
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // Check if the player has left the platform
+        if (collision.gameObject.CompareTag("PlayerHitBox"))
+        {
+            collision.transform.SetParent(null); // Reset the player's parent
+        }
+    }
 
     private void OnDrawGizmos()
     {

@@ -3,9 +3,11 @@ using UnityEngine;
 public class FlyingMovement : EnemyMovement
 {
     private Animator anim;
+    private CircleCollider2D collider;
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        collider = gameObject.GetComponent<CircleCollider2D>();
     }
     public override void MoveTowards(Vector3 targetPosition, float speed)
     {
@@ -22,6 +24,7 @@ public class FlyingMovement : EnemyMovement
     }
     public override void DeathAnimation()
     {
+        collider.enabled=false;
         anim.SetTrigger("explosion");
     }
 }

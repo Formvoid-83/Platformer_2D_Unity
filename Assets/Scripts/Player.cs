@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
     private float inputH;
-    private int maxHealth = 100;
+    private int maxHealth;
     private SpriteRenderer spriteRenderer;
     private float currentHealth;
     private Image healthBarFill;
@@ -57,7 +57,9 @@ public class Player : MonoBehaviour
         }
         originalColor = spriteRenderer.color;
         theManager = gameManager.GetComponent<GameManager>();
- 
+        
+        maxHealth = (int)PlayerData.MaxHealth;
+        currentHealth = PlayerData.CurrentHealth;
     }
 
     // Update is called once per frame
@@ -81,7 +83,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isCrouching", true);
 
         // Crouch attack only when crouching
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             animator.SetTrigger("crouchAttack");
         }
@@ -104,27 +106,43 @@ public class Player : MonoBehaviour
 
     private void throwAttack()
     {
-        if (Input.GetKeyDown(KeyCode.V) && amIGrounded())
+        if (Input.GetKeyDown(KeyCode.G) && amIGrounded())
         {
             animator.SetTrigger("attack");
         }
     }
-    private void Attack(){
-        LivesSystem liveSystem;
-        Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRadious, whatCanReceiveDamage);
-        foreach(Collider2D touchCol in touchedColliders){
-            liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
+    private void Attack()
+{
+    Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRadious, whatCanReceiveDamage);
+    foreach (Collider2D touchCol in touchedColliders)
+    {
+        LivesSystem liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
+        if (liveSystem != null)
+        {
             liveSystem.receiveDamage(attackDamage);
         }
-    }
-    private void CrouchAttack(){
-        LivesSystem liveSystem;
-        Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(crouchAttackPoint.position, attackRadious, whatCanReceiveDamage);
-        foreach(Collider2D touchCol in touchedColliders){
-            liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
-            liveSystem.receiveDamage(attackDamage);
+        else
+        {
+            Debug.LogWarning($"No LivesSystem found on {touchCol.gameObject.name}");
         }
     }
+}
+    private void CrouchAttack()
+{
+    Collider2D[] touchedColliders = Physics2D.OverlapCircleAll(crouchAttackPoint.position, attackRadious, whatCanReceiveDamage);
+    foreach (Collider2D touchCol in touchedColliders)
+    {
+        LivesSystem liveSystem = touchCol.gameObject.GetComponent<LivesSystem>();
+        if (liveSystem != null)
+        {
+            liveSystem.receiveDamage(attackDamage);
+        }
+        else
+        {
+            Debug.LogWarning($"No LivesSystem found on {touchCol.gameObject.name}");
+        }
+    }
+}
 
     private void Jump()
     {
@@ -135,7 +153,7 @@ public class Player : MonoBehaviour
         }
     }
     private void JumpAttack(){
-        if(Input.GetKeyDown(KeyCode.V) && !amIGrounded()){
+        if(Input.GetKeyDown(KeyCode.G) && !amIGrounded()){
                 animator.SetTrigger("jumpAttack");
             }
     }
@@ -172,6 +190,7 @@ public class Player : MonoBehaviour
         if (!isBlinking)
         {
             currentHealth -= damage;
+            PlayerData.CurrentHealth = currentHealth;
             StartCoroutine(BlinkEffect());
             // Apply knockback
             Vector2 knockbackDirection = inputH > 0 ? Vector2.left : Vector2.right;
@@ -216,10 +235,11 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Player is dead!");
         theManager?.GameOver();
+        PlayerData.CurrentHealth = PlayerData.MaxHealth;
     }
 
-    private void OnDrawGizmos() {
+    /*private void OnDrawGizmos() {
         Gizmos.DrawSphere(attackPoint.position, attackRadious);
         Gizmos.DrawSphere(crouchAttackPoint.position, attackRadious);
-    }
+    }*/
 }
